@@ -55,7 +55,9 @@
             margin-top: 20px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #007b00; /* Более тёмный контрастный цвет */
+            color: #ffffff; /* Белый текст */
+            box-shadow: 0 0 10px rgba(0, 123, 0, 0.8); /* Эффект свечения */
         }
         table {
             width: 100%;
@@ -129,12 +131,17 @@
             border-radius: 5px;
             background-color: #4CAF50;
             color: white;
-            width: 50px;
+            width: 35px;
             text-align: center;
+            transition: background-color 0.3s, box-shadow 0.3s; /* Плавный переход */
         }
+
         .symbol-button:hover {
-            background-color: #45a049;
+            background-color: #007b00; /* Более тёмный контрастный цвет */
+            color: #ffffff; /* Белый текст */
+            box-shadow: 0 0 10px rgba(0, 123, 0, 0.8); /* Эффект свечения */
         }
+
 
         button[type="submit"] {
             font-size: 16px;
@@ -202,10 +209,10 @@
     <div class="statistics">
         <table>
             <tr>
-                <td><span class="bold total-words">{{ total_words }}</span> тыл биир тыллыы</td>
-                <td><span class="bold identical-words">{{ identical_words }}</span> тэӈ тыл һакалыы онно сахалыы</td>
-                <td><span class="bold partially-different-words">{{ partially_different_words }}</span> арыччы эӈин-эӈин тыл</td>
-                <td><span class="bold different-words">{{ different_words }}</span> эӈин-эӈин тыл</td>
+                <td>Тыл аайыннан <span class="bold total-words">{{ total_words }}</span> тыл</td>
+                <td><span class="bold identical-words">{{ identical_words }}</span> тэӈ тыл</td>
+                <td><span class="bold partially-different-words">{{ partially_different_words }}</span> арыччы эӈин-эӈин</td>
+                <td><span class="bold different-words">{{ different_words }}</span> эӈин-эӈин</td>
             </tr>
         </table>
     </div>
