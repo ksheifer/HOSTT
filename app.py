@@ -31,6 +31,24 @@ def index():
     # Получаем общий поисковый запрос
     search_query = request.form.get("search_query", "")
 
+    # Статистика по словам
+    total_words = len(dictionary)  # Общее количество слов в словаре
+    identical_words = 0  # Слова, где SIM == 100
+    different_words = 0  # Слова, где SIM == 0
+    partially_different_words = 0  # Слова, где SIM != 0 и SIM != 100
+
+    # Перебираем все записи в словаре и считаем статистику
+    for entry in dictionary:
+        sim_value = entry.get('SIM')
+        if sim_value:
+            sim_value = int(sim_value)  # Преобразуем в число для сравнения
+            if sim_value == 100:
+                identical_words += 1
+            elif sim_value == 0:
+                different_words += 1
+            else:
+                partially_different_words += 1
+
     # Очистка результатов перед новым поиском
     if not search_query:
         results = []  # Если нет запроса, очищаем старые результаты
@@ -50,7 +68,11 @@ def index():
     return render_template(
         'index.html',
         results=results,
-        search_query=search_query
+        search_query=search_query,
+        total_words=total_words,
+        identical_words=identical_words,
+        different_words=different_words,
+        partially_different_words=partially_different_words
     )
 
 if __name__ == "__main__":
