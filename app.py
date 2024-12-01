@@ -49,6 +49,11 @@ def index():
             else:
                 partially_different_words += 1
 
+    # Рассчитываем проценты (целые числа)
+    identical_percent = int((identical_words / total_words) * 100) if total_words else 0
+    different_percent = int((different_words / total_words) * 100) if total_words else 0
+    partially_different_percent = int((partially_different_words / total_words) * 100) if total_words else 0
+
     # Очистка результатов перед новым поиском
     if not search_query:
         results = []  # Если нет запроса, очищаем старые результаты
@@ -70,9 +75,9 @@ def index():
         results=results,
         search_query=search_query,
         total_words=total_words,
-        identical_words=identical_words,
-        different_words=different_words,
-        partially_different_words=partially_different_words
+        identical_words=f"{identical_percent}%",  # Процентное значение
+        different_words=f"{different_percent}%",  # Процентное значение
+        partially_different_words=f"{partially_different_percent}%"  # Процентное значение
     )
 
 if __name__ == "__main__":
