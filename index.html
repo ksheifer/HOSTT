@@ -11,11 +11,12 @@
             text-align: center;
             background-color: #f9f9f9;
             margin: 0;
-            padding: 0;
+            padding-bottom: 100px;
         }
         h1 {
             color: #004d00;
             font-family: 'Montserrat', sans-serif;
+            margin-top: 70px;
         }
         .container {
             display: flex;
@@ -24,7 +25,7 @@
             flex-wrap: wrap;
         }
         .search-container {
-            width: 40%;
+            width: 35%;
             margin-top: -5px;
             text-align: center;
         }
@@ -34,13 +35,13 @@
             margin: 5px 0;
             border: 1px solid #ddd;
             font-family: 'Montserrat', sans-serif;
-            font-size: 18px; /* Размер шрифта такой же, как у кнопок */
+            font-size: 16px;
             box-sizing: border-box;
             text-align: center;
         }
         input[type="text"]::placeholder {
-            font-size: 18px; /* Размер шрифта для плейсхолдера */
-            color: #888; /* Цвет для плейсхолдера */
+            font-size: 16px;
+            color: #888;
         }
         button {
             padding: 10px 20px;
@@ -49,7 +50,7 @@
             border: none;
             cursor: pointer;
             font-family: 'Montserrat', sans-serif;
-            font-size: 18px; /* Размер шрифта кнопки одинаков с символами */
+            font-size: 16px;
             width: auto;
             margin-top: 20px;
         }
@@ -58,10 +59,11 @@
         }
         table {
             width: 100%;
-            margin-top: 20px;
+            margin-top: -50px;
             border-collapse: collapse;
             background-color: white;
             table-layout: fixed;
+            font-size: 16px;
         }
         th, td {
             padding: 10px;
@@ -112,7 +114,7 @@
             margin-top: 10px;
         }
         .symbols {
-            margin-top: 10px;
+            margin-top: 30px;
             margin-bottom: -15px;
             display: flex;
             justify-content: center;
@@ -121,7 +123,7 @@
         .symbol-button {
             padding: 5px 10px;
             margin: 3px;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -135,13 +137,78 @@
         }
 
         button[type="submit"] {
-            font-size: 18px;
+            font-size: 16px;
+        }
+
+        .statistics {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .statistics table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .statistics td {
+            padding: 10px;
+            font-weight: normal; /* Оставляем обычный текст */
+            color: #555; /* Для слов цвет черный */
+        }
+
+        /* Убираем границы таблицы */
+        .statistics td {
+            border: none;
+        }
+
+        /* Для выделения цифр и значений */
+        .bold {
+            font-weight: bold;
+        }
+
+        .total-words {
+            color: #004d00; /* Цвет для первой цифры */
+        }
+
+        .identical-words {
+            color: #45a049; /* Цвет для второй цифры */
+        }
+
+        .different-words {
+            color: crimson; /* Цвет для третьей цифры */
+        }
+
+        .partially-different-words {
+            color: orange; /* Цвет для четвертой цифры */
+        }
+
+        /* Добавим отступы сверху для контейнера с результатами */
+        .results-container {
+            padding-top: 60px; /* Достаточно большого отступа, чтобы избежать наложения */
         }
     </style>
 </head>
 <body>
-    <h1>ҺАКАЛЫЫ-САХАЛЫЫ-НЬУУЧЧАЛЫЫ ТЫЛДЬЫТ</h1>
-    <h1>ДОЛГАНСКО-ЯКУТСКО-РУССКИЙ СЛОВАРЬ</h1>
+    <h1>ҺАКАЛЫЫ-САХАЛЫЫ-НЬУУЧЧАЛЫЫ ТЫЛДЬЫТ<br>ДОЛГАНСКО-ЯКУТСКО-РУССКИЙ СЛОВАРЬ</h1>
+
+    <!-- Статистика -->
+    <div class="statistics">
+        <table>
+            <tr>
+                <td><span class="bold total-words">{{ total_words }}</span> тыл биир тыллыы</td>
+                <td><span class="bold identical-words">{{ identical_words }}</span> тэӈ тыл һакалыы онно сахалыы</td>
+                <td><span class="bold partially-different-words">{{ partially_different_words }}</span> арыччы эӈин-эӈин тыл</td>
+                <td><span class="bold different-words">{{ different_words }}</span> эӈин-эӈин тыл</td>
+            </tr>
+        </table>
+    </div>
 
     <div class="container">
         <div class="symbols">
@@ -164,49 +231,51 @@
         </div>
     </form>
 
-    {% if results and results|length > 0 %}
-        <div class="container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Һакалыы</th>
-                        <th>Сахалыы</th>
-                        <th>Һака онно саха майгыннаһыыта</th>
-                        <th>Ньууччаллыы</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for entry in results %}
+    <div class="results-container">
+        {% if results and results|length > 0 %}
+            <div class="container">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ entry['ҺАКАЛЫЫ'] }}
-                                {% if entry['ҺАКАЛЫЫ_ex'] %}
-                                    <div class="example">{{ entry['ҺАКАЛЫЫ_ex'] }}</div>
-                                {% endif %}
-                            </td>
-                            <td>{{ entry['САХАЛЫЫ'] }}
-                                {% if entry['САХАЛЫЫ_ex'] %}
-                                    <div class="example">{{ entry['САХАЛЫЫ_ex'] }}</div>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="progress-wrapper">
-                                    <div class="progress-container">
-                                        <div class="progress-bar" style="width: {{ entry['SIM'] }}%;"></div>
-                                        <span class="progress-text">{{ entry['SIM'] }}%</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{{ entry['НЬУУЧЧАЛЫЫ'] }}
-                                {% if entry['НЬУУЧЧАЛЫЫ_ex'] %}
-                                    <div class="example">{{ entry['НЬУУЧЧАЛЫЫ_ex'] }}</div>
-                                {% endif %}
-                            </td>
+                            <th>Һакалыы</th>
+                            <th>Сахалыы</th>
+                            <th>Һака онно саха тыллар майгыннаһыылара</th>
+                            <th>Ньууччаллыы</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% endif %}
+                    </thead>
+                    <tbody>
+                        {% for entry in results %}
+                            <tr>
+                                <td>{{ entry['ҺАКАЛЫЫ'] }}
+                                    {% if entry['ҺАКАЛЫЫ_ex'] %}
+                                        <div class="example">{{ entry['ҺАКАЛЫЫ_ex'] }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>{{ entry['САХАЛЫЫ'] }}
+                                    {% if entry['САХАЛЫЫ_ex'] %}
+                                        <div class="example">{{ entry['САХАЛЫЫ_ex'] }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="progress-wrapper">
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: {{ entry['SIM'] }}%;"></div>
+                                            <span class="progress-text">{{ entry['SIM'] }}%</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ entry['НЬУУЧЧАЛЫЫ'] }}
+                                    {% if entry['НЬУУЧЧАЛЫЫ_ex'] %}
+                                        <div class="example">{{ entry['НЬУУЧЧАЛЫЫ_ex'] }}</div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
 
     <script>
         function insertSymbol(symbol) {
