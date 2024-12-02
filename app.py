@@ -18,15 +18,17 @@ def load_dictionary():
 
 # Функция для нормализации текста
 def normalize_text(text):
-    return text.replace('е', 'ё').replace('Е', 'Ё').replace('ё', 'е').replace('Ё', 'е') \
-               .replace('ҕ', '5').replace('ҕ', '5') \
-               .replace('һ', 'ь').replace('һ', 'ь') \
-               .replace('5', 'ҕ').replace('ь', 'һ')
+    return (text.replace('е', 'ё')
+               .replace('ҕ', '5')
+               .replace('һ', 'ь')
+               .replace('5', 'ҕ')
+               .replace('ң', 'ҥ'))
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     dictionary = load_dictionary()  # Загружаем данные из CSV
     results = []  # Список для хранения результатов
+    error_message = None  # Сообщение об ошибке
 
     # Получаем общий поисковый запрос
     search_query = request.form.get("search_query", "")
@@ -37,7 +39,6 @@ def index():
     different_words = 0  # Слова, где SIM == 0
     partially_different_words = 0  # Слова, где SIM != 0 и SIM != 100
 
-    # Перебираем все записи в словаре и считаем статистику
     for entry in dictionary:
         sim_value = entry.get('SIM')
         if sim_value:
@@ -49,35 +50,45 @@ def index():
             else:
                 partially_different_words += 1
 
-    # Рассчитываем проценты (целые числа)
     identical_percent = int((identical_words / total_words) * 100) if total_words else 0
     different_percent = int((different_words / total_words) * 100) if total_words else 0
     partially_different_percent = int((partially_different_words / total_words) * 100) if total_words else 0
 
-    # Очистка результатов перед новым поиском
-    if not search_query:
-        results = []  # Если нет запроса, очищаем старые результаты
-
-    # Поиск по всем языкам
+    # Поиск по запросу
     if search_query:
-        # Очищаем старые результаты перед добавлением новых
-        results.clear()  # Очистка списка перед новым поиском
-        for entry in dictionary:
-            # Проверяем совпадение с любым языком
-            if (normalize_text(search_query.lower()) in normalize_text(entry.get('НЬУУЧЧАЛЫЫ', '').lower())) or \
-               (normalize_text(search_query.lower()) in normalize_text(entry.get('ҺАКАЛЫЫ', '').lower())) or \
-               (normalize_text(search_query.lower()) in normalize_text(entry.get('САХАЛЫЫ', '').lower())):
-                results.append(entry)
+        normalized_query = normalize_text(search_query.lower())
+        exact_matches = []
+        prefix_matches = []
 
-    # Отправляем данные в шаблон
+        for entry in dictionary:
+            normalized_nyuchchaly = normalize_text(entry.get('НЬУУЧЧАЛЫЫ', '').lower())
+            normalized_hakaly = normalize_text(entry.get('ҺАКАЛЫЫ', '').lower())
+            normalized_sakhaly = normalize_text(entry.get('САХАЛЫЫ', '').lower())
+
+            if (normalized_query == normalized_nyuchchaly or
+                normalized_query == normalized_hakaly or
+                normalized_query == normalized_sakhaly):
+                exact_matches.append(entry)
+            else:
+                for field in [normalized_nyuchchaly, normalized_hakaly, normalized_sakhaly]:
+                    prefix_length = 3 if len(field) <= 5 else 4
+                    if normalized_query[:prefix_length] == field[:prefix_length]:
+                        prefix_matches.append(entry)
+                        break
+
+        results = exact_matches + prefix_matches
+        if not results:
+            error_message = "Тугу эмэ атыны көрдөөн көр"
+
     return render_template(
         'index.html',
         results=results,
         search_query=search_query,
+        error_message=error_message,
         total_words=total_words,
-        identical_words=f"{identical_percent}%",  # Процентное значение
-        different_words=f"{different_percent}%",  # Процентное значение
-        partially_different_words=f"{partially_different_percent}%"  # Процентное значение
+        identical_words=f"{identical_percent}%",
+        different_words=f"{different_percent}%",
+        partially_different_words=f"{partially_different_percent}%"
     )
 
 if __name__ == "__main__":
