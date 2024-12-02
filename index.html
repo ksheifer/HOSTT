@@ -3,282 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Словарь</title>
+    <title>Тылдьыт</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            text-align: center;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding-bottom: 100px;
-        }
-        h1 {
-            color: #004d00;
-            font-family: 'Montserrat', sans-serif;
-            margin-top: 70px;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            flex-wrap: wrap;
-        }
-        .search-container {
-            width: 35%;
-            margin-top: -5px;
-            text-align: center;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 16px;
-            box-sizing: border-box;
-            text-align: center;
-        }
-        input[type="text"]::placeholder {
-            font-size: 16px;
-            color: #888;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 16px;
-            width: auto;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #007b00; /* Более тёмный контрастный цвет */
-            color: #ffffff; /* Белый текст */
-            box-shadow: 0 0 10px rgba(0, 123, 0, 0.8); /* Эффект свечения */
-        }
-        table {
-            width: 100%;
-            margin-top: -50px;
-            border-collapse: collapse;
-            background-color: white;
-            table-layout: fixed;
-            font-size: 16px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-            width: 25%;
-        }
-        th {
-            background-color: white;
-            color: #004d00;
-            font-family: 'Montserrat', sans-serif;
-        }
-        td {
-            background-color: white;
-        }
-        .progress-wrapper {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-        .progress-container {
-            width: 80%;
-            background-color: #FFEB3B;
-            border-radius: 25px;
-            position: relative;
-            height: 20px;
-        }
-        .progress-bar {
-            height: 100%;
-            background-color: #4CAF50;
-            border-radius: 25px;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .progress-text {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            color: #004d00;
-            font-weight: bold;
-            z-index: 1;
-        }
-        .example {
-            font-style: italic;
-            color: #555;
-            margin-top: 10px;
-        }
-        .symbols {
-            margin-top: 30px;
-            margin-bottom: -15px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .symbol-button {
-            padding: 5px 10px;
-            margin: 3px;
-            font-size: 16px;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            width: 35px;
-            text-align: center;
-            transition: background-color 0.3s, box-shadow 0.3s; /* Плавный переход */
-        }
-
-        .symbol-button:hover {
-            background-color: #007b00; /* Более тёмный контрастный цвет */
-            color: #ffffff; /* Белый текст */
-            box-shadow: 0 0 10px rgba(0, 123, 0, 0.8); /* Эффект свечения */
-        }
-
-
-        button[type="submit"] {
-            font-size: 16px;
-        }
-
-        .statistics {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #f9f9f9;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-            z-index: 100;
-        }
-
-        .statistics table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-            font-size: 15px;
-        }
-
-        .statistics td {
-            padding: 10px;
-            font-weight: normal; /* Оставляем обычный текст */
-            color: #555; /* Для слов цвет черный */
-        }
-
-        /* Убираем границы таблицы */
-        .statistics td {
-            border: none;
-        }
-
-        /* Для выделения цифр и значений */
-        .bold {
-            font-weight: bold;
-        }
-
-        .total-words {
-            color: #004d00; /* Цвет для первой цифры */
-        }
-
-        .identical-words {
-            color: #45a049; /* Цвет для второй цифры */
-        }
-
-        .different-words {
-            color: crimson; /* Цвет для третьей цифры */
-        }
-
-        .partially-different-words {
-            color: orange; /* Цвет для четвертой цифры */
-        }
-
-        /* Добавим отступы сверху для контейнера с результатами */
-        .results-container {
-            padding-top: 60px; /* Достаточно большого отступа, чтобы избежать наложения */
-        }
-
-
-        .tooltip {
-            position: absolute;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 8px;
-            border-radius: 5px;
-            font-size: 14px;
-            display: none; /* Скрыт по умолчанию */
-            z-index: 1000;
-            white-space: nowrap;
-            text-align: center;
-            bottom: 40px; /* Поднимем тултип вверх относительно элемента */
-            left: 50%;
-            transform: translateX(-50%);
-            transition: opacity 0.3s ease; /* Плавное появление */
-        }
-
-        /* Стиль для тултипа, который виден */
-        .tooltip.active {
-            display: block; /* Показываем тултип */
-            opacity: 1;
-        }
-
-        /* Стрелочка, указывающая на элемент */
-        .tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%; /* Располагаем стрелочку под тултипом */
-            left: 50%;
-            margin-left: -5px; /* Центрируем стрелочку */
-            border-width: 5px;
-            border-style: solid;
-            border-color: rgba(0, 0, 0, 0.7) transparent transparent transparent; /* Черный цвет для стрелочки */
-        }
-
-        /* Тултип для статистики */
-        .statistics td[data-tooltip] {
-            position: relative;
-        }
-
-        .statistics td[data-tooltip]:hover .tooltip {
-            display: block;
-            opacity: 1; /* Показываем тултип при наведении на элемент */
-        }
-
-        /* Тултип для контейнера */
-        .tooltip-container {
-            position: relative; /* Для правильного позиционирования тултипа */
-            cursor: pointer; /* Указываем, что элемент интерактивен */
-        }
-
-        /* Стиль тултипа при наведении на элемент */
-        .tooltip-container:hover .tooltip {
-            display: block; /* Показываем тултип при наведении */
-            opacity: 1;
-        }
-
-        /* Для элементов с тултипами внутри таблицы */
-        .tooltip-container .tooltip {
-            bottom: 60px; /* Поднимем тултип вверх относительно элемента */
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-
-    </style>
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 </head>
 <body>
-    <h1>ҺАКАЛЫЫ-САХАЛЫЫ-НЬУУЧЧАЛЫЫ ТЫЛДЬЫТ<br>ДОЛГАНСКО-ЯКУТСКО-РУССКИЙ СЛОВАРЬ</h1>
-
-
+    <h1>ҺАКАЛЫЫ-САХАЛЫЫ-НЬУУЧЧАЛЫЫ ТЫЛДЬЫТ</h1>
+    <h2>долганско-якутско-русский словарь</h2>
     <!-- Статистика -->
     <div class="statistics">
         <table>
             <tr>
                 <td data-tooltip="Общее количество слов">
-                    Тыл аайыннан <span class="bold total-words">{{ total_words }}</span> тыл
+                    Тыл аайы {{ total_words }} тыллаак
                     <div class="tooltip">Слов на одном языке</div>
                 </td>
                 <td data-tooltip="Количество идентичных слов">
@@ -286,7 +23,7 @@
                     <div class="tooltip">Идентичных слов</div>
                 </td>
                 <td data-tooltip="Количество частично одинаковых слов">
-                    <span class="bold partially-different-words">{{ partially_different_words }}</span> арыччы эӈин-эӈин тыл
+                    <span class="bold partially-different-words">{{ partially_different_words }}</span> кыратык эӈин-эӈин тыл
                     <div class="tooltip">Частично одинаковых слов</div>
                 </td>
                 <td data-tooltip="Количество различных слов">
@@ -297,6 +34,7 @@
         </table>
     </div>
 
+    <!-- Кнопки для символов -->
     <div class="container">
         <div class="symbols">
             <button type="button" class="symbol-button" onclick="insertSymbol('ӈ')">ӈ</button>
@@ -308,7 +46,7 @@
         </div>
     </div>
 
-    <!-- Search form -->
+    <!-- Форма поиска -->
     <form method="POST">
         <div class="container">
             <div class="search-container">
@@ -318,21 +56,26 @@
         </div>
     </form>
 
+        <!-- Результаты поиска -->
     <div class="results-container">
-        {% if results and results|length > 0 %}
+        {% if search_query and error_message %}
+            <div class="error-message">
+                {{ error_message }}
+            </div>
+        {% elif results and results|length > 0 %}
             <div class="container">
                 <table>
-                <thead>
-                    <tr>
-                        <th>Һакалыы</th>
-                        <th>Сахалыы</th>
-                        <th class="tooltip-container" data-tooltip="Сходство долганских и якутских слов">
-                            Һака онно саха тыллар майгыннаһыылара
-                            <div class="tooltip">Схожесть долганских и якутских слов</div>
-                        </th>
-                        <th>Ньууччаллыы</th>
-                    </tr>
-                </thead>
+                    <thead>
+                        <tr>
+                            <th>Һакалыы</th>
+                            <th>Сахалыы</th>
+                            <th class="tooltip-container" data-tooltip="Сходство долганских и якутских слов">
+                                Һака онно саха тыллар майгыннаһыылара
+                                <div class="tooltip">Схожесть долганских и якутских слов</div>
+                            </th>
+                            <th>Ньууччаллыы</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {% for entry in results %}
                             <tr>
@@ -364,13 +107,21 @@
                     </tbody>
                 </table>
             </div>
+        {% elif search_query %}
+            <div class="error-message">
+                Эмиэ көрдөөн көр
+            </div>
         {% endif %}
     </div>
 
+
     <script>
         function insertSymbol(symbol) {
-            var inputField = document.querySelector('input[name="search_query"]');
-            inputField.value += symbol;
+            const searchInput = document.querySelector('input[name="search_query"]');
+            if (searchInput) {
+                searchInput.value += symbol;
+                searchInput.focus();
+            }
         }
     </script>
 </body>
