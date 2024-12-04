@@ -3,6 +3,9 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+# Автообновление шаблонов
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 # Функция для загрузки данных из CSV
 def load_dictionary():
     dictionary = []
@@ -10,7 +13,8 @@ def load_dictionary():
         with open('/Users/karinasheifer/Documents/Languages/Turkic/NorthSiberian/DLG/tyldit.csv', mode='r', encoding='utf-8') as file:
             csv_reader = csv.DictReader(file, delimiter='\t')
             for row in csv_reader:
-                row = {key.strip(): (value.strip() if value else '') for key, value in row.items()}
+                # Заменяем \n на <br> в значениях
+                row = {key.strip(): (value.strip().replace('\n', '<br>') if value else '') for key, value in row.items()}
                 dictionary.append(row)
     except Exception as e:
         print(f"Ошибка при загрузке словаря: {e}")
@@ -23,6 +27,15 @@ def normalize_text(text):
                .replace('һ', 'ь')
                .replace('5', 'ҕ')
                .replace('ң', 'ҥ'))
+
+# Функция для токенизации строки: удаляет пунктуацию и пробелы, возвращает список токенов
+def tokenize_text(text):
+    return re.findall(r'\b\w+\b', text.lower())  # Находит слова и приводит их к нижнему регистру
+
+# Функция для сравнения токенов из запроса и токенов в данных
+def tokens_match(query_tokens, entry_tokens):
+    # Проверяем, все ли токены из запроса присутствуют в токенах записи
+    return all(token in entry_tokens for token in query_tokens)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -57,28 +70,46 @@ def index():
     # Поиск по запросу
     if search_query:
         normalized_query = normalize_text(search_query.lower())
+        query_tokens = tokenize_text(normalized_query)  # Токенизация запроса
+        print(f"Query tokens: {query_tokens}")  # Печать токенов запроса
+
         exact_matches = []
         prefix_matches = []
 
         for entry in dictionary:
-            normalized_nyuchchaly = normalize_text(entry.get('НЬУУЧЧАЛЫЫ', '').lower())
-            normalized_hakaly = normalize_text(entry.get('ҺАКАЛЫЫ', '').lower())
-            normalized_sakhaly = normalize_text(entry.get('САХАЛЫЫ', '').lower())
+            # Токенизация полей записи
+            nyuchchaly_tokens = tokenize_text(normalize_text(entry.get('НЬУУЧЧАЛЫЫ', '')))
+            hakaly_tokens = tokenize_text(normalize_text(entry.get('ҺАКАЛЫЫ', '')))
+            sakhaly_tokens = tokenize_text(normalize_text(entry.get('САХАЛЫЫ', '')))
 
-            if (normalized_query == normalized_nyuchchaly or
-                normalized_query == normalized_hakaly or
-                normalized_query == normalized_sakhaly):
+            print(f"Entry tokens: {nyuchchaly_tokens}, {hakaly_tokens}, {sakhaly_tokens}")  # Печать токенов записи
+
+            # Проверяем точное совпадение токенов
+            if (tokens_match(query_tokens, nyuchchaly_tokens) or
+                tokens_match(query_tokens, hakaly_tokens) or
+                tokens_match(query_tokens, sakhaly_tokens)):
                 exact_matches.append(entry)
             else:
-                for field in [normalized_nyuchchaly, normalized_hakaly, normalized_sakhaly]:
-                    prefix_length = 3 if len(field) <= 5 else 4
-                    if normalized_query[:prefix_length] == field[:prefix_length]:
+                # Проверяем совпадение по префиксу
+                for field_tokens in [nyuchchaly_tokens, hakaly_tokens, sakhaly_tokens]:
+                    # Определяем длину префикса на основе длины символов в каждом токене
+                    prefix_length = 3 if all(len(token) <= 6 for token in field_tokens) else 4
+                    print(f"Field tokens for prefix match check: {field_tokens}, prefix length: {prefix_length}")
+
+                    # Проверяем совпадение по префиксу для токенов
+                    for query_token, field_token in zip(query_tokens, field_tokens):
+                        if not field_token.startswith(query_token[:prefix_length]):
+                            break
+                    else:
+                        # Если цикл не прервался, значит, префиксное совпадение найдено
+                        print(f"Prefix match found for entry: {entry}")
                         prefix_matches.append(entry)
                         break
 
         results = exact_matches + prefix_matches
+
         if not results:
-            error_message = "Тугу эмэ атыны көрдөөн көр"
+            error_message = "Оо дьэ... тугу эмэ атыны көрдөөн көр"
 
     return render_template(
         'index.html',
