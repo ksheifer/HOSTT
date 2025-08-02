@@ -1,17 +1,26 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import create_engine, text, inspect, or_
 from sqlalchemy.orm import sessionmaker
 from app.models import Dictionary
 import re
 
-app = Flask(__name__, template_folder='/Users/karinasheifer/PycharmProjects/online_dict/templates',
-            static_folder='/Users/karinasheifer/PycharmProjects/online_dict/static')
+# Определим базовую директорию проекта
+basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Настройка базы данных
-DATABASE_URL = 'sqlite:////Users/karinasheifer/PycharmProjects/online_dict/app/dictionary.db'
+# Правильная и переносимая инициализация Flask-приложения
+app = Flask(
+    __name__,
+    template_folder=os.path.join(basedir, '..', 'templates'),
+    static_folder=os.path.join(basedir, '..', 'static')
+)
+
+# Подключение базы данных
+DATABASE_URL = f"sqlite:///{os.path.join(basedir, 'dictionary.db')}"
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 session = Session()
+
 
 
 # Функция для загрузки данных из базы данных
