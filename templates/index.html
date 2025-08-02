@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ҺОСТТ</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .navbar {
+            margin-bottom: 1.5cm;
+        }
+    </style>
+</head>
+<body>
+    <!-- Заголовки -->
+    <div class="center">
+        <h1 class="first-header">
+            <span class="highlight" style="letter-spacing: 1em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ҺОС</span>
+            <span class="highlight" style="letter-spacing: 0.05em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ТТ</span>
+        </h1>
+
+        <h1>
+            <span style="color: #3B8E42; font-weight: bold;">Һ</span>АКА
+            <span style="color: #3B8E42; font-weight: bold;">О</span>ННО
+            <span style="color: #3B8E42; font-weight: bold;">С</span>АХА
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЭӇНИИР
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЫЛДЬЫТА
+        </h1>
+        <h2>сравнительный словарь долганского и якутского языков</h2>
+    </div>
+
+    <!-- Верхняя панель -->
+    <div class="navbar">
+        <ul>
+            <div class="left">
+                <li><a href="{{ url_for('index') }}" style="color: #004d00;">ПОИСК</a></li>
+                <li><a href="{{ url_for('about') }}">О СЛОВАРЕ</a></li>
+                <li><a href="{{ url_for('statistics') }}">СТАТИСТИКА</a></li>
+                <li><a href="{{ url_for('lexicon') }}">ЛЕКСИКА</a></li>
+                <li><a href="{{ url_for('semantics') }}">СЕМАНТИКА</a></li>
+                <li><a href="{{ url_for('etymology') }}">ЭТИМОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('morphology') }}">МОРФОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('phonetics') }}">ФОНЕТИКА</a></li>
+            </div>
+        </ul>
+    </div>
+
+    <!-- Верхняя панель -->
+    <div class="symbol-buttons">
+        <button type="button" class="symbol-button" onclick="insertSymbol('ӈ')">ӈ</button>
+        <button type="button" class="symbol-button" onclick="insertSymbol('ҥ')">ҥ</button>
+        <button type="button" class="symbol-button" onclick="insertSymbol('ҕ')">ҕ</button>
+        <button type="button" class="symbol-button" onclick="insertSymbol('һ')">һ</button>
+        <button type="button" class="symbol-button" onclick="insertSymbol('ө')">ө</button>
+        <button type="button" class="symbol-button" onclick="insertSymbol('ү')">ү</button>
+    </div>
+
+    <!-- Форма поиска -->
+    <form method="GET">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" name="search_word" placeholder="Тылгытын һуруйуӈ | Введите слово" value="{{ search_query }}">
+                <button type="submit">Көрдөөһүн | Поиск</button>
+            </div>
+        </div>
+    </form>
+
+       <!-- Результаты поиска -->
+    <div class="results-container">
+    {% if search_query and error_message %}
+        <div class="error-message" style="font-size: 20px; color: #45a049;">
+            {{ error_message }}
+        </div>
+    {% elif results and results|length > 0 %}
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Һакалыы</th>
+                        <th>Сахалыы</th>
+                        <th>Тыллар тэӈнээһинэ<br>Схожесть слов</th>
+                        <th>Ньууччалыы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in results %}
+                        <tr>
+                            <td>{{ entry['ҺАКАЛЫЫ']|safe }}
+                                {% if entry['ҺАКАЛЫЫ_ex'] %}
+                                    <div class="example">{{ entry['ҺАКАЛЫЫ_ex']|safe }}</div>
+                                {% endif %}
+                            </td>
+                            <td>{{ entry['САХАЛЫЫ']|safe }}
+                                {% if entry['САХАЛЫЫ_ex'] %}
+                                    <div class="example">{{ entry['САХАЛЫЫ_ex']|safe }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="progress-wrapper">
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: {{ entry['SIM'] }}%;"></div>
+                                        <span class="progress-text">{{ entry['SIM'] }}%</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ entry['НЬУУЧЧАЛЫЫ']|safe }}
+                                {% if entry['НЬУУЧЧАЛЫЫ_ex'] %}
+                                    <div class="example">{{ entry['НЬУУЧЧАЛЫЫ_ex']|safe }}</div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if grouped_results and grouped_results|length > 0 %}
+            <div class="target" style="padding: 30px 0 50px 0; text-align: center;">
+                <h3>Бу иттэ туксар көрдүк<br>Это также может быть полезно</h3>
+            </div>
+            <div class="container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Һакалыы</th>
+                            <th>Сахалыы</th>
+                            <th>Тыллар тэӈнээһинэ<br>Схожесть слов</th>
+                            <th>Ньууччалыы</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for word in grouped_results %}
+                            <tr>
+                                <td>{{ word['ҺАКАЛЫЫ']|safe }}
+                                    {% if word['ҺАКАЛЫЫ_ex'] %}
+                                        <div class="example">{{ word['ҺАКАЛЫЫ_ex']|safe }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>{{ word['САХАЛЫЫ']|safe }}
+                                    {% if word['САХАЛЫЫ_ex'] %}
+                                        <div class="example">{{ word['САХАЛЫЫ_ex']|safe }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="progress-wrapper">
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: {{ word['SIM'] }}%;"></div>
+                                            <span class="progress-text">{{ word['SIM'] }}%</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ word['НЬУУЧЧАЛЫЫ']|safe }}
+                                    {% if word['НЬУУЧЧАЛЫЫ_ex'] %}
+                                        <div class="example">{{ word['НЬУУЧЧАЛЫЫ_ex']|safe }}</div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+    {% elif search_query %}
+        <div class="error-message">
+            Оо дьэ... тугу эмэ атыны көрдөөн көр
+        </div>
+    {% endif %}
+</div>
+
+
+
+    <script>
+        function insertSymbol(symbol) {
+            const searchInput = document.querySelector('input[name="search_word"]');
+            if (searchInput) {
+                searchInput.value += symbol;
+                searchInput.focus();
+            }
+        }
+    </script>
+</body>
+</html>

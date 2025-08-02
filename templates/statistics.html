@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .navbar {
+            margin-bottom: 1.5cm;
+        }
+    </style>
+</head>
+<body>
+    <!-- Заголовки -->
+    <div class="center">
+        <h1 class="first-header">
+            <span class="highlight" style="letter-spacing: 1em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ҺОС</span>
+            <span class="highlight" style="letter-spacing: 0.05em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ТТ</span>
+        </h1>
+
+
+        <h1>
+            <span style="color: #3B8E42; font-weight: bold;">Һ</span>АКА
+            <span style="color: #3B8E42; font-weight: bold;">О</span>ННО
+            <span style="color: #3B8E42; font-weight: bold;">С</span>АХА
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЭӇНИИР
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЫЛДЬЫТА
+        </h1>
+        <h2>сравнительный словарь долганского и якутского языков</h2>
+    </div>
+
+    <!-- Верхняя панель -->
+    <div class="navbar">
+        <ul>
+            <div class="left">
+                <li><a href="{{ url_for('index') }}">ПОИСК</a></li>
+                <li><a href="{{ url_for('about') }}">О СЛОВАРЕ</a></li>
+                <li><a href="{{ url_for('statistics') }}" style="color: #004d00;">СТАТИСТИКА</a></li>
+                <li><a href="{{ url_for('lexicon') }}">ЛЕКСИКА</a></li>
+                <li><a href="{{ url_for('semantics') }}">СЕМАНТИКА</a></li>
+                <li><a href="{{ url_for('etymology') }}">ЭТИМОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('morphology') }}">МОРФОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('phonetics') }}">ФОНЕТИКА</a></li>
+            </div>
+        </ul>
+    </div>
+
+    <div class="chart-container">
+    <canvas id="statisticsChart"></canvas>
+    <div class="total-words">
+        <p class="total-words-label">
+            <span class="highlight">{{ total_words }}</span>{% set total_words_str = total_words|string %}{% set last_digit = total_words_str[-1] %}{% if last_digit == "1" %}-дии
+            {% elif last_digit in ["2", "7"] %}-лии
+            {% elif last_digit in ["3", "4"] %}-түү
+            {% elif last_digit == "5" %}-тии
+            {% elif last_digit == "6" %}-лыы
+            {% elif last_digit == "8" %}-тыы
+            {% elif last_digit == "9" %}-туу
+            {% elif last_digit == "0" %}-нуу
+            {% endif %}тыл<br>Слов на каждом языке
+        </p>
+    </div>
+</div>
+
+
+
+    <script>
+const totalWords = parseInt({{ total_words | tojson }});
+const identicalWords = parseInt({{ identical_words | tojson }});
+const partiallyDifferentWords = parseInt({{ partially_different_words | tojson }});
+const differentWords = parseInt({{ different_words | tojson }});
+
+console.log(totalWords, identicalWords, partiallyDifferentWords, differentWords);
+
+const ctx = document.getElementById('statisticsChart').getContext('2d');
+const statisticsChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: [
+                `${identicalWords}% тэӈ | одинаковые`,
+                `${partiallyDifferentWords}% тэӈ һогус | похожие`,
+                `${differentWords}% эӈин-эӈин | разные`
+        ],
+        datasets: [{
+            label: 'Статистика',
+            data: [identicalWords, partiallyDifferentWords, differentWords],
+            backgroundColor: [
+                '#146E14', // Темно-зеленый
+                '#4CAF50', // Зеленый
+                '#C3E600'  // Ярко-желто-зеленый
+            ],
+            hoverBackgroundColor: [
+                '#0F5710', // Более темный оттенок для темно-зеленого
+                '#3B8E42', // Более темный оттенок для зеленого
+                '#B4D200'  // Более темный оттенок для желто-зеленого
+            ],
+            borderColor: '#ffffff', // Белая граница
+            borderWidth: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            tooltip: {
+                enabled: false // Отключение тултипа
+            },
+            legend: {
+                display: false // Отключаем стандартную легенду
+            }
+        },
+        cutout: '70%' // Регулировка внутреннего радиуса
+    },
+    plugins: [
+        {
+            id: 'customLegend',
+            beforeDraw(chart) {
+                const { ctx } = chart;
+                const labels = chart.data.labels;
+
+                // Уникальные цвета текста для легенды
+                const legendColors = ['#004d00', '#4CAF50', '#C0D000'];
+
+                // Координаты центра диаграммы
+                const centerX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
+                const centerY = chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2;
+
+                // Настройки текста
+                ctx.textAlign = 'center';
+                ctx.font = '18px Montserrat';
+
+                // Добавление отступа сверху
+                const legendYOffset = 50;
+
+                // Отрисовка каждого элемента легенды
+                labels.forEach((label, index) => {
+                    const yOffset = index * 30 - 30 + legendYOffset; // Расстояние между строками и отступ сверху
+                    ctx.fillStyle = legendColors[index]; // Цвет текста для каждого элемента
+                    ctx.fillText(label, centerX, centerY + yOffset);
+                });
+            }
+        }
+    ]
+});
+</script>
+
+</body>
+</html>

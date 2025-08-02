@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О словаре</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Заголовки -->
+    <div class="center">
+        <h1 class="first-header">
+            <span class="highlight" style="letter-spacing: 1em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ҺОС</span>
+            <span class="highlight" style="letter-spacing: 0.05em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ТТ</span>
+        </h1>
+
+
+        <h1>
+            <span style="color: #3B8E42; font-weight: bold;">Һ</span>АКА
+            <span style="color: #3B8E42; font-weight: bold;">О</span>ННО
+            <span style="color: #3B8E42; font-weight: bold;">С</span>АХА
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЭӇНИИР
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЫЛДЬЫТА
+        </h1>
+        <h2>сравнительный словарь долганского и якутского языков</h2>
+    </div>
+
+    <!-- Верхняя панель -->
+    <div class="navbar">
+        <ul>
+            <div class="left">
+                <li><a href="{{ url_for('index') }}">ПОИСК</a></li>
+                <li><a href="{{ url_for('about') }}" style="color: #004d00;">О СЛОВАРЕ</a></li>
+                <li><a href="{{ url_for('statistics') }}">СТАТИСТИКА</a></li>
+                <li><a href="{{ url_for('lexicon') }}">ЛЕКСИКА</a></li>
+                <li><a href="{{ url_for('semantics') }}">СЕМАНТИКА</a></li>
+                <li><a href="{{ url_for('etymology') }}">ЭТИМОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('morphology') }}">МОРФОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('phonetics') }}">ФОНЕТИКА</a></li>
+            </div>
+        </ul>
+    </div>
+
+<div class="target" style="padding: 110px; text-align: justify;">
+    <h3 style="text-align: center; margin-top: -50px; margin-bottom: 30px;">Цель и языки словаря</h3>
+    <p class="target" style="line-height: 1.6;">
+        Основная цель этого проекта — объективно оценить языковую дистанцию близкородственных языков <strong>һака</strong> (долганского) и <strong>саха</strong> (якутского).<br>
+        В качестве основного варианта для долганских языковых данных используется <strong>нижний диалект</strong>.
+        <ul style="list-style-type: none; padding-left: 0;">
+        <li style="position: relative; margin-bottom: 15px; padding-left: 25px;">
+            <span style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #4CAF50; width: 8px; height: 8px; border-radius: 50%;"></span>
+            Большинство современных носителей долганского языка владеет именно этим диалектом.
+        </li>
+        <li style="position: relative; margin-bottom: 15px; padding-left: 25px;">
+            <span style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #4CAF50; width: 8px; height: 8px; border-radius: 50%;"></span>
+            В сравнении с верхним, нижний диалект долганского языка стоит несколько дальше от языка саха, что позволяет лучше проиллюстрировать языковую вариативность.
+        </li>
+        </ul>
+        В отдельных случаях приводятся варианты как на верхнем, так и на нижнем диалектах долганского.
+        Диалектные особенности языка саха в словаре не отражены.
+    </p>
+    <h3 style="text-align: center; margin-top: 50px; margin-bottom: 30px;">Численная оценка схожести</h3>
+    <p class="target" style="line-height: 1.6;">
+        Одно фонетическое чередование, наблюдаемое в паре языков, принято за <strong>5%</strong> отличия.
+        Так слова <em><b>б</b>уус</em> и <em><b>м</b>уус</em>&nbsp;&nbsp;'лёд' оцениваются в <strong>95%</strong> схожести.
+        При этом схожесть слов <em><b>к</b>а<b>лк</b>а</em> и <em><b>х</b>а<b>хх</b>а</em>&nbsp;&nbsp;'защищённое место, укрытие' равна <strong>85%</strong>.<br><br>
+
+
+
+        Одно морфологическое отличие принято за <strong>20%</strong>.
+        Так слова <em>албын<b>-ньак</b></em> и <em>албын<b>-ньыт</b></em>&nbsp;&nbsp;'обманщик' имеют <strong>80%</strong> схожести.<br><br>
+
+        Встречаются комбинированные варианты морфологических и фонетических отличий.<br>
+        Так оценка в <strong>75%</strong> cходства между словами <em>ал<b>г</b>-<b>аактаа</b></em> и <em>ал<b>ҕ</b>-<b>аталаа</b></em>&nbsp;&nbsp;'многократно благословлять' обусловлена морфологическим и фонетическим отличиями.<br><br>
+
+        При одинаковой внешней форме и отличном (но близком) значении слов схожесть принята за <strong>50%</strong>.<br>
+        Пример такой пары — слова <em>аӈаарый</em>&nbsp;&nbsp;'видеть кошмары' и <em>аҥаарый</em>&nbsp;&nbsp;'быть сонным'.<br><br>
+
+        Если слова имеют одинаковый перевод, но разную внешнюю форму, то схожесть равна <strong>0%</strong>. Например, <em>алакии</em> и <em>өтүрдьэх</em>&nbsp;&nbsp;'ползунки'.<br>
+        То же относится к случаям, когда слово существует только в одном языке. Например, <em>аттакы</em>&nbsp;'скопец (человек)' в саха или <em>ньиптэ</em>&nbsp;&nbsp;'место для рубки дров, подстилка для разделывания мяса' в долганском.
+    </p>
+ <h3 style="text-align: center; margin-top: 50px; margin-bottom: 30px;">Гибкий поиск</h3>
+    <p class="target" style="line-height: 1.6;">
+        Поисковая строка принимает ввод на любом из трех языков: долганском, саха, русском.
+        В выдаче результатов поиска первым указывается искомое слово, ниже выводятся однокоренные слова.
+        При отсутствии слова в словарной базе выходит сообщение с предложением поискать другое слово <em>"Оо дьэ... тугу эмэ атыны көрдөөн көр"</em>.
+    </p>
+    <p class="target" style="line-height: 1.6;">
+        Поиск позволяет при наборе запроса использовать специальные символы путем нажатия кнопок <em>ӈ, ҥ, ҕ, һ, ө, ү</em>.<br>
+        Помимо этого, допустимо использовать следующие "костыльные" символы, которыми пользователи часто заменяют специальные символы.<br>
+    </p>
+    <p style="text-align: center;">
+        аа<b>5</b>ааччы ~ аа<b>ҕ</b>ааччы<br>
+        аа<b>ь</b>ааччы ~ аа<b>һ</b>ааччы<br>
+        ала<b>ң</b>аа ~ ала<b>ҥ</b>аа<br>
+        ала<b>н,</b>аа ~ ала<b>ӈ</b>аа<br>
+        ала<b>нг</b>аа ~ ала<b>ҥ</b>аа<br>
+    </p>
+ <h3 style="text-align: center; margin-top: 50px; margin-bottom: 30px;">Этимология</h3>
+    <p class="target" style="line-height: 1.6;">
+        Языки, являющиеся источниками заимствования, указаны со строчной буквы: <em>эвенк</em>, <em>рус</em>, <em>кит</em>, <em>норв</em>, <em>фин</em>.<br>
+        Языковые семьи, в которых есть слова общего происхождения, даны с заглавной буквы: <em>Тюрк</em>, <em>Тунг</em>, <em>Монг</em>.
+    </p>
+ <h3 style="text-align: center; margin-top: 50px; margin-bottom: 30px;">Источники данных</h3>
+<p class="target" style="line-height: 1.6;">
+    <ul style="list-style-type: none; padding-left: 0;">
+        <li style="position: relative; margin-bottom: 15px; padding-left: 25px;">
+            <span style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #4CAF50; width: 8px; height: 8px; border-radius: 50%;"></span>
+            Дулгаанныы-ньууччалыы тылдьыт = Долганско-русский словарь. Около 9000 слов. Составители: <em>Е.Е.&nbsp;Аксёнова, А.А.&nbsp;Барболина, Н.С.&nbsp;Кудрякова, Н.Н.&nbsp;Жаркова, С.&nbsp;Фудзисиро, А.А.&nbsp;Петров</em>. Научный ред. <em>А.А.&nbsp;Петров.</em> — СПб.: Алмаз-Граф, 2019. — 608 с.
+        </li>
+        <li style="position: relative; margin-bottom: 15px; padding-left: 25px;">
+            <span style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #4CAF50; width: 8px; height: 8px; border-radius: 50%;"></span>
+            <a href="https://igi.ysn.ru/btsja/" target="_blank">Саха тылын быhаарыылаах уланах тылдьыта</a> = Большой толковый словарь якутского языка в 15 томах. Научный ред. <em>П.А. Слепцов.</em> — Новосибирск: Наука, 2016.
+        </li>
+        <li style="position: relative; margin-bottom: 15px; padding-left: 25px;">
+            <span style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #4CAF50; width: 8px; height: 8px; border-radius: 50%;"></span>
+            Сравнительный словарь тунгусо-маньчжурских языков. Отв. ред. <em>В.И.&nbsp;Цинциус</em> — Л.: Наука, 1975. Т. I: А–Ӈ — 672 с.; 1977. Т. II: О–Э. — 992 с.
+        </li>
+        <li style="position: relative; margin-bottom: 15px; padding-left: 25px;">
+            <span style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #4CAF50; width: 8px; height: 8px; border-radius: 50%;"></span>
+            <em>Stachowski, Marek.</em> Dolganischer Wortschatz. — Kraków: Uniwersytet Jagielloński, 1993. — 264 S.
+        </li>
+        <li style="position: relative; margin-bottom: 15px; padding-left: 25px;">
+            <span style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #4CAF50; width: 8px; height: 8px; border-radius: 50%;"></span>
+            <em>Däbritz, Chris Lasse; Kudryakova, Nina; Stapert, Eugénie.</em> 2022. <a href="https://inel.corpora.uni-hamburg.de/DolganCorpus/search" target="_blank">INEL Dolgan Corpus.</a> Version 2.0. Publication date 2022-11-30.
+        </li>
+    </ul>
+</p>
+        <h3 style="text-align: center; margin-top: 50px; margin-bottom: 30px;">Составитель-разработчик</h3>
+    <p class="target" style="line-height: 1.6;">
+    Составление словаря и техническая разработка: Карина Шейфер<br>
+    Почта для связи: <a href="mailto:kar.sheifer@gmail.com">kar.sheifer@gmail.com</a>
+    </p>
+</div>
+</body>
+</html>

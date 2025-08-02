@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Этимология</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        h3 {
+            cursor: pointer;
+            color: #3B8E42;
+            font-weight: bold;
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+        }
+
+        h3:hover {
+            text-decoration: underline;
+        }
+
+        .results-container {
+            margin-top: 0px; /* Убрали отступ между заголовком и таблицей, сделали одинаковыми для всех таблиц */
+        }
+
+        table {
+            display: none;
+            width: auto; /* Таблица занимает всю доступную ширину */
+            border-collapse: collapse;
+            background-color: white;
+            table-layout: auto; /* Фиксированная ширина столбцов */
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Заголовки -->
+    <div class="center">
+        <h1 class="first-header">
+            <span class="highlight" style="letter-spacing: 1em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ҺОС</span>
+            <span class="highlight" style="letter-spacing: 0.05em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ТТ</span>
+        </h1>
+
+        <h1>
+            <span style="color: #3B8E42; font-weight: bold;">Һ</span>АКА
+            <span style="color: #3B8E42; font-weight: bold;">О</span>ННО
+            <span style="color: #3B8E42; font-weight: bold;">С</span>АХА
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЭӇНИИР
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЫЛДЬЫТА
+        </h1>
+        <h2>сравнительный словарь долганского и якутского языков</h2>
+    </div>
+
+    <!-- Верхняя панель -->
+    <div class="navbar">
+        <ul>
+            <div class="left">
+                <li><a href="{{ url_for('index') }}">ПОИСК</a></li>
+                <li><a href="{{ url_for('about') }}">О СЛОВАРЕ</a></li>
+                <li><a href="{{ url_for('statistics') }}">СТАТИСТИКА</a></li>
+                <li><a href="{{ url_for('lexicon') }}">ЛЕКСИКА</a></li>
+                <li><a href="{{ url_for('semantics') }}">СЕМАНТИКА</a></li>
+                <li><a href="{{ url_for('etymology') }}" style="color: #004d00;">ЭТИМОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('morphology') }}">МОРФОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('phonetics') }}">ФОНЕТИКА</a></li>
+            </div>
+        </ul>
+    </div>
+
+    <!-- Блок перед первой таблицей -->
+    <div class="target" style="padding: 50px 0 0px 0; text-align: center;">
+        <h3 onclick="toggleTable('evn-table')">Тоӈустан ылыллыбыт тыллар<br>Заимствования из эвенкийского</h3>
+        <p id="evn-count"></p> <!-- Место для вывода количества -->
+    </div>
+    <div class="results-container">
+        <div class="container">
+            <table id="evn-table">
+                <thead>
+                    <tr>
+                        <th>Һакалыы</th>
+                        <th>Сахалыы</th>
+                        <th>Тыллар тэӈнээһинэ<br>Схожесть слов</th>
+                        <th>Ньууччалыы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in evn_words %}
+                    <tr>
+                        <td>{{ entry['ҺАКАЛЫЫ']|safe }}
+                            {% if entry['ҺАКАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['ҺАКАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ entry['САХАЛЫЫ']|safe }}
+                            {% if entry['САХАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['САХАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="progress-wrapper">
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: {{ entry['SIM'] }}%;"></div>
+                                    <span class="progress-text">{{ entry['SIM'] }}%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ entry['НЬУУЧЧАЛЫЫ']|safe }}
+                            {% if entry['НЬУУЧЧАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['НЬУУЧЧАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+        <!-- Блок перед четвертой таблицей (Монгольский) -->
+    <div class="target" style="padding: 0px 0 0px 0; text-align: center;">
+        <h3 onclick="toggleTable('mong-table')">Монголлары гытта тэӈ тыллар<br>Общие слова с монгольскими языками</h3>
+        <p id="mong-count"></p> <!-- Место для вывода количества -->
+    </div>
+    <div class="results-container">
+        <div class="container">
+            <table id="mong-table">
+                <thead>
+                    <tr>
+                        <th>Һакалыы</th>
+                        <th>Сахалыы</th>
+                        <th>Тыллар тэӈнээһинэ<br>Схожесть слов</th>
+                        <th>Ньууччалыы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in mong_words %}
+                    <tr>
+                        <td>{{ entry['ҺАКАЛЫЫ']|safe }}
+                            {% if entry['ҺАКАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['ҺАКАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ entry['САХАЛЫЫ']|safe }}
+                            {% if entry['САХАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['САХАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="progress-wrapper">
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: {{ entry['SIM'] }}%;"></div>
+                                    <span class="progress-text">{{ entry['SIM'] }}%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ entry['НЬУУЧЧАЛЫЫ']|safe }}
+                            {% if entry['НЬУУЧЧАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['НЬУУЧЧАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Блок перед второй таблицей -->
+    <div class="target" style="padding: 50px 0 0px 0; text-align: center;">
+        <h3 onclick="toggleTable('rus-table')">Ньууччаттан ылыллыбыт тыллар<br>Заимствования из русского</h3>
+        <p id="rus-count"></p> <!-- Место для вывода количества -->
+    </div>
+    <div class="results-container">
+        <div class="container">
+            <table id="rus-table">
+                <thead>
+                    <tr>
+                        <th>Һакалыы</th>
+                        <th>Сахалыы</th>
+                        <th>Тыллар тэӈнээһинэ<br>Схожесть слов</th>
+                        <th>Ньууччалыы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in rus_words %}
+                    <tr>
+                        <td>{{ entry['ҺАКАЛЫЫ']|safe }}
+                            {% if entry['ҺАКАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['ҺАКАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ entry['САХАЛЫЫ']|safe }}
+                            {% if entry['САХАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['САХАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="progress-wrapper">
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: {{ entry['SIM'] }}%;"></div>
+                                    <span class="progress-text">{{ entry['SIM'] }}%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ entry['НЬУУЧЧАЛЫЫ']|safe }}
+                            {% if entry['НЬУУЧЧАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['НЬУУЧЧАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Блок перед третьей таблицей (Нганасанский) -->
+    <div class="target" style="padding: 50px 0 0px 0; text-align: center;">
+        <h3 onclick="toggleTable('ngan-table')">Һаамайтан ылыллыбыт тыллар<br>Заимствования из нганасанского</h3>
+        <p id="ngan-count"></p> <!-- Место для вывода количества -->
+    </div>
+    <div class="results-container">
+        <div class="container">
+            <table id="ngan-table">
+                <thead>
+                    <tr>
+                        <th>Һакалыы</th>
+                        <th>Сахалыы</th>
+                        <th>Тыллар тэӈнээһинэ<br>Схожесть слов</th>
+                        <th>Ньууччалыы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in ngan_words %}
+                    <tr>
+                        <td>{{ entry['ҺАКАЛЫЫ']|safe }}
+                            {% if entry['ҺАКАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['ҺАКАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ entry['САХАЛЫЫ']|safe }}
+                            {% if entry['САХАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['САХАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="progress-wrapper">
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: {{ entry['SIM'] }}%;"></div>
+                                    <span class="progress-text">{{ entry['SIM'] }}%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ entry['НЬУУЧЧАЛЫЫ']|safe }}
+                            {% if entry['НЬУУЧЧАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['НЬУУЧЧАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="target" style="padding: 50px 0 0px 0; text-align: center;">
+        <h3 onclick="toggleTable('other-table')">Атын тылтан ылыллыбыт тыллар<br>Заимствования из других языков</h3>
+        <p id="other-count"></p> <!-- Место для вывода количества -->
+    </div>
+    <div class="results-container">
+        <div class="container">
+            <table id="other-table">
+                <thead>
+                    <tr>
+                        <th>Һакалыы</th>
+                        <th>Сахалыы</th>
+                        <th>Тыллар тэӈнээһинэ<br>Схожесть слов</th>
+                        <th>Ньууччалыы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in other_words %}
+                    <tr>
+                        <td>{{ entry['ҺАКАЛЫЫ']|safe }}
+                            {% if entry['ҺАКАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['ҺАКАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ entry['САХАЛЫЫ']|safe }}
+                            {% if entry['САХАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['САХАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="progress-wrapper">
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: {{ entry['SIM'] }}%;"></div>
+                                    <span class="progress-text">{{ entry['SIM'] }}%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ entry['НЬУУЧЧАЛЫЫ']|safe }}
+                            {% if entry['НЬУУЧЧАЛЫЫ_ex'] %}
+                                <div class="example">{{ entry['НЬУУЧЧАЛЫЫ_ex']|safe }}</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Функция для подсчета заимствований в таблицах
+        function countBorrowings(entries) {
+            let hakalyCount = 0;
+            let sahalyCount = 0;
+
+            entries.forEach(entry => {
+                if (entry['ҺАКАЛЫЫ']) hakalyCount++;
+                if (entry['САХАЛЫЫ']) sahalyCount++;
+            });
+
+            return { hakalyCount, sahalyCount };
+        }
+
+        // Функция для отображения/скрытия таблицы
+        function toggleTable(tableId) {
+        var table = document.getElementById(tableId);
+
+        // Проверяем текущее состояние отображения таблицы и переключаем
+        if (table.style.display === "none" || table.style.display === "") {
+            table.style.display = "block";  // Показываем таблицу
+        } else {
+            table.style.display = "none";   // Скрываем таблицу
+        }
+    }
+
+        // Функция для вывода количества заимствований в таблицах
+        function displayCounts() {
+            // Подсчет для каждой таблицы
+            var evnWords = {{ evn_words|tojson }};
+            var rusWords = {{ rus_words|tojson }};
+            var nganWords = {{ ngan_words|tojson }};
+            var mongWords = {{ mong_words|tojson }};
+            var otherWords = {{ other_words|tojson }};
+
+            var evnCount = countBorrowings(evnWords);
+            var rusCount = countBorrowings(rusWords);
+            var nganCount = countBorrowings(nganWords);
+            var mongCount = countBorrowings(mongWords);
+            var otherCount = countBorrowings(otherWords);
+
+            // Вывод количества в соответствующие блоки
+            document.getElementById('evn-count').innerText = "Һакага " + evnCount.hakalyCount + " | Сахага " + evnCount.sahalyCount;
+            document.getElementById('rus-count').innerText = "Һакага " + rusCount.hakalyCount + " | Сахага " + rusCount.sahalyCount;
+            document.getElementById('ngan-count').innerText = "Һакага " + nganCount.hakalyCount + " | Сахага " + nganCount.sahalyCount;
+            document.getElementById('mong-count').innerText = "Һакага " + mongCount.hakalyCount + " | Сахага " + mongCount.sahalyCount;
+            document.getElementById('other-count').innerText = "Һакага " + otherCount.hakalyCount + " | Сахага " + otherCount.sahalyCount;
+        }
+
+        // Загружаем функцию подсчета при загрузке страницы
+        window.onload = displayCounts;
+    </script>
+</body>
+</html>

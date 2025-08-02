@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Морфология</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Заголовки -->
+    <div class="center">
+        <h1 class="first-header">
+            <span class="highlight" style="letter-spacing: 1em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ҺОС</span>
+            <span class="highlight" style="letter-spacing: 0.05em; font-family: 'Oswald', sans-serif; color: #3B8E42;">ТТ</span>
+        </h1>
+
+        <h1>
+            <span style="color: #3B8E42; font-weight: bold;">Һ</span>АКА
+            <span style="color: #3B8E42; font-weight: bold;">О</span>ННО
+            <span style="color: #3B8E42; font-weight: bold;">С</span>АХА
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЭӇНИИР
+            <span style="color: #3B8E42; font-weight: bold;">Т</span>ЫЛДЬЫТА
+        </h1>
+        <h2>сравнительный словарь долганского и якутского языков</h2>
+    </div>
+
+    <!-- Верхняя панель -->
+    <div class="navbar">
+        <ul>
+            <div class="left">
+                <li><a href="{{ url_for('index') }}">ПОИСК</a></li>
+                <li><a href="{{ url_for('about') }}">О СЛОВАРЕ</a></li>
+                <li><a href="{{ url_for('statistics') }}">СТАТИСТИКА</a></li>
+                <li><a href="{{ url_for('lexicon') }}">ЛЕКСИКА</a></li>
+                <li><a href="{{ url_for('semantics') }}">СЕМАНТИКА</a></li>
+                <li><a href="{{ url_for('etymology') }}">ЭТИМОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('morphology') }}" style="color: #004d00;">МОРФОЛОГИЯ</a></li>
+                <li><a href="{{ url_for('phonetics') }}">ФОНЕТИКА</a></li>
+            </div>
+        </ul>
+    </div>
+</body>
+</html>
