@@ -89,19 +89,26 @@ def get_words_in_group(group, dictionary):
 
 # Функция для статистики
 def calculate_statistics(dictionary):
-    total_words = len(dictionary)  # Общее количество слов в словаре
-    identical_words = 0  # Слова, где SIM == 100
-    different_words = 0  # Слова, где SIM == 0
-    partially_different_words = 0  # Слова, где SIM != 0 и SIM != 100
+    total_words = len(dictionary)
+    if total_words == 0:
+        return {
+            "total_words": 0,
+            "identical_percent": 0,
+            "different_percent": 0,
+            "partially_different_percent": 0
+        }
 
-    # Проход по словарю и подсчет статистики по полю SIM
+    identical_words = 0
+    different_words = 0
+    partially_different_words = 0
+
     for entry in dictionary:
         sim_value = entry.get('SIM')
-        if sim_value is not None:  # Проверяем, что значение существует
+        if sim_value is not None:
             try:
-                sim_value = int(sim_value)  # Преобразуем в число
+                sim_value = int(sim_value)
             except ValueError:
-                continue  # Пропускаем некорректные значения
+                continue
             if sim_value == 100:
                 identical_words += 1
             elif sim_value == 0:
@@ -109,7 +116,6 @@ def calculate_statistics(dictionary):
             elif 0 < sim_value < 100:
                 partially_different_words += 1
 
-    # Вычисляем проценты
     identical_percent = round((identical_words / total_words) * 100)
     different_percent = round((different_words / total_words) * 100)
     partially_different_percent = 100 - identical_percent - different_percent
